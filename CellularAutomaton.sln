@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellularAutomaton", "CellularAutomaton.csproj", "{AAAF50E9-3132-4B57-9045-288C06483118}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAAF50E9-3132-4B57-9045-288C06483118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAAF50E9-3132-4B57-9045-288C06483118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAAF50E9-3132-4B57-9045-288C06483118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAAF50E9-3132-4B57-9045-288C06483118}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
