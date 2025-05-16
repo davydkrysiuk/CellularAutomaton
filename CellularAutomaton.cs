@@ -1,5 +1,7 @@
 ﻿namespace CellularAutomaton;
-    
+using System.Drawing;
+using System.Drawing.Imaging;
+
 public enum State
 {
     Off,
@@ -12,7 +14,8 @@ abstract class CellularAutomaton
     private int Width { get; init; }
     private int Height { get; init; }
     State[,] _grid;
-    private readonly List<Tuple<int, State, State, State>> _conditions = [];
+    private readonly List<Tuple<int, State, State, State>> _conditions = new List<Tuple<int, State, State, State>>();
+    private readonly List<State[,]> _updates = new List<State[,]>();
     
     protected CellularAutomaton(int height, int width)
     {
@@ -65,8 +68,9 @@ abstract class CellularAutomaton
                 }
             }
         }
-
+        
         _grid = gridUpdate;
+        _updates.Add(_grid);
     }
     
     public void Randomize()
@@ -81,7 +85,60 @@ abstract class CellularAutomaton
             }
         }
     }
-    
+
+    public virtual void ProduceImages()
+    {
+        for (int i = 0; i < _updates.Count; i++)
+        {
+            Bitmap bitmap = null;
+
+            try
+            {   
+                bitmap = new Bitmap(Width, Height);
+
+                for (int j = 0; j < Width; j++)
+                {
+                    for (int k = 0; k < Height; k++)
+                    {
+                        Color color = Color.Cyan;
+                        if (_updates[i] != null)
+                        {
+                            switch ((_updates[i])[k, j])
+                            {
+                                case State.On: color = Color.White; break;
+                                case State.Off: color = Color.Black; break;
+                                case State.Dying: color = Color.Red; break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Warning: _updates[{i}] is null. Skipping pixel.");
+                        }
+                   
+                        bitmap.SetPixel(j, k, color);
+                    }
+                }
+                if (!Directory.Exists("./images"))
+                {
+                    Directory.CreateDirectory("./images");
+                }
+                string filePath = "./images/" + i + ".jpeg";
+                bitmap.Save(filePath, ImageFormat.Jpeg);
+                Console.WriteLine($"Saved image: {filePath}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error saving image {i}: {e.Message}"); 
+            }
+            finally
+            {
+                if (bitmap != null)
+                {
+                    bitmap.Dispose();
+                }
+            }
+        }
+    }
     
     public virtual void Display()
     {
@@ -93,7 +150,7 @@ abstract class CellularAutomaton
                 {
                     case State.On:
                     {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.BackgroundColor = ConsoleColor.Red;
                         Console.Write(' ');
                         break;
                     }
@@ -105,7 +162,7 @@ abstract class CellularAutomaton
                     }
                     case State.Dying:
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.BackgroundColor = ConsoleColor.White;
                         Console.Write(' ');
                         break;
                     }

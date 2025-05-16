@@ -1,5 +1,6 @@
 ﻿namespace CellularAutomaton;
-
+using System.Drawing;
+using System.Drawing.Imaging;
 public class MooreNeighborhood
 {
     public static int GetNeighbors(State[,] grid, int x, int y, State counted)
@@ -30,14 +31,17 @@ class Program
 {
     static void Main()
     {
-        CellularAutomaton a = new BriansBrain(Console.WindowHeight -2, Console.WindowWidth);
+        CellularAutomaton a = new BriansBrain(720, 1280);
         a.Randomize();
-        Console.SetCursorPosition(0, 1);
-        while (true)
+        //Console.SetCursorPosition(0, 1);
+        int i = 0;
+        while (i < 200)
         {
-            a.Display();
+            //a.Display();
             a.Update();
-            Console.SetCursorPosition(0, 1);
+            //Console.SetCursorPosition(0, 1);
+            i++;
         }
+        a.ProduceImages();
     }
 }
