@@ -1,6 +1,7 @@
-﻿namespace CellularAutomaton;
-using System.Drawing;
-using System.Drawing.Imaging;
+﻿using SixLabors.ImageSharp.PixelFormats;
+
+namespace CellularAutomaton;
+using SixLabors.ImageSharp;
 
 public enum State
 {
@@ -42,7 +43,7 @@ abstract class CellularAutomaton
     {
         State[,] gridUpdate = new State[Height, Width];
 
-        for (int i = 0; i < Height; i++)
+        Parallel.For(0, Height, i =>
         {
             for (int j = 0; j < Width; j++)
             {
@@ -53,13 +54,13 @@ abstract class CellularAutomaton
                     State fromState = condition.Item2;
                     State toState = condition.Item3;
                     State stateToCount = condition.Item4;
-                    
+
                     if (currentState == fromState)
                     {
                         if (toCount == -1)
                         {
                             gridUpdate[i, j] = toState;
-                        } 
+                        }
                         else if (MooreNeighborhood.GetNeighbors(_grid, i, j, stateToCount) == toCount)
                         {
                             gridUpdate[i, j] = toState;
@@ -67,7 +68,7 @@ abstract class CellularAutomaton
                     }
                 }
             }
-        }
+        });
         
         _grid = gridUpdate;
         _updates.Add(_grid);
@@ -88,56 +89,28 @@ abstract class CellularAutomaton
 
     public virtual void ProduceImages()
     {
-        for (int i = 0; i < _updates.Count; i++)
+        Parallel.For(0, _updates.Count, i =>
         {
-            Bitmap bitmap = null;
+            using var image = new Image<Rgba32>(Width, Height);
 
-            try
-            {   
-                bitmap = new Bitmap(Width, Height);
-
-                for (int j = 0; j < Width; j++)
+            for (int j = 0; j < Width; j++)
+            {
+                for (int k = 0; k < Height; k++)
                 {
-                    for (int k = 0; k < Height; k++)
+                    switch (_updates[i][k, j])
                     {
-                        Color color = Color.Cyan;
-                        if (_updates[i] != null)
-                        {
-                            switch ((_updates[i])[k, j])
-                            {
-                                case State.On: color = Color.White; break;
-                                case State.Off: color = Color.Black; break;
-                                case State.Dying: color = Color.Red; break;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Warning: _updates[{i}] is null. Skipping pixel.");
-                        }
-                   
-                        bitmap.SetPixel(j, k, color);
+                        case State.Off: image[j, k] = new Rgba32(0, 0, 0, 255); break;
+                        case State.Dying: image[j, k] = new Rgba32(255, 255, 255, 255); break;
+                        case State.On: image[j, k] = new Rgba32(57, 255, 20, 255); break;
                     }
                 }
-                if (!Directory.Exists("./images"))
-                {
-                    Directory.CreateDirectory("./images");
-                }
-                string filePath = "./images/" + i + ".jpeg";
-                bitmap.Save(filePath, ImageFormat.Jpeg);
-                Console.WriteLine($"Saved image: {filePath}");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error saving image {i}: {e.Message}"); 
-            }
-            finally
-            {
-                if (bitmap != null)
-                {
-                    bitmap.Dispose();
-                }
-            }
-        }
+
+            string filePath = "./images/" + i + ".jpeg";
+            image.Save(filePath);
+            Console.WriteLine(i + "/" + _updates.Count  + " images generated.");
+
+        });
     }
     
     public virtual void Display()
