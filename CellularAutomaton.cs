@@ -10,14 +10,13 @@ public enum State
     Dying
 }
 
-abstract class CellularAutomaton
+public abstract class CellularAutomaton
 {
     private int Width { get; init; }
     private int Height { get; init; }
     State[,] _grid;
     private readonly List<Tuple<int, State, State, State>> _conditions = new List<Tuple<int, State, State, State>>();
-    private readonly List<State[,]> _updates = new List<State[,]>();
-    
+    private int _updateCount = 0;
     protected CellularAutomaton(int height, int width)
     {
         Width = width;
@@ -39,13 +38,13 @@ abstract class CellularAutomaton
         }
     }
     
-    public void Update()
+    public void Update(Boolean produceImage = false)
     {
         State[,] gridUpdate = new State[Height, Width];
 
         Parallel.For(0, Height, i =>
         {
-            for (int j = 0; j < Width; j++)
+            Parallel.For(0, Width, j =>
             {
                 State currentState = _grid[i, j];
                 foreach (var condition in _conditions)
@@ -67,11 +66,11 @@ abstract class CellularAutomaton
                         }
                     }
                 }
-            }
+            });
         });
-        
+        ProduceImage(gridUpdate, _updateCount + "");
+        _updateCount++;
         _grid = gridUpdate;
-        _updates.Add(_grid);
     }
     
     public void Randomize()
@@ -87,30 +86,24 @@ abstract class CellularAutomaton
         }
     }
 
-    public virtual void ProduceImages()
+    private void ProduceImage(State[,] grid, string filename)
     {
-        Parallel.For(0, _updates.Count, i =>
+        using var image = new Image<Rgba32>(Width, Height);
+        Parallel.For(0, Width, j => 
         {
-            using var image = new Image<Rgba32>(Width, Height);
-
-            for (int j = 0; j < Width; j++)
+            for (int k = 0; k < Height; k++)
             {
-                for (int k = 0; k < Height; k++)
+                switch (grid[k, j])
                 {
-                    switch (_updates[i][k, j])
-                    {
-                        case State.Off: image[j, k] = new Rgba32(0, 0, 0, 255); break;
-                        case State.Dying: image[j, k] = new Rgba32(255, 255, 255, 255); break;
-                        case State.On: image[j, k] = new Rgba32(57, 255, 20, 255); break;
-                    }
+                    case State.Off: image[j, k] = new Rgba32(222,31,38); break;
+                    case State.Dying: image[j, k] = new Rgba32(255, 0, 255); break;
+                    case State.On: image[j, k] = new Rgba32	(112,189,84); break;
                 }
             }
-
-            string filePath = "./images/" + i + ".jpeg";
-            image.Save(filePath);
-            Console.WriteLine(i + "/" + _updates.Count  + " images generated.");
-
         });
+
+        string filePath = "./images/" + filename + ".jpeg";
+        image.Save(filePath);
     }
     
     public virtual void Display()

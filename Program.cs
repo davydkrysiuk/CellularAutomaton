@@ -30,16 +30,15 @@ class Program
 {
     static void Main()
     {
-        CellularAutomaton a = new BriansBrain(720, 1280);
+        CellularAutomaton a = new DayAndNight(1080 , 1920);
         a.Randomize();
-        int frames = 9000;
+        int frames = 18000;
         int i = 0;
         while (i < frames)
         {
-            a.Update();
+            a.Update(true);
             Console.WriteLine(i + "/" + frames + " updates generated. " + ((double)i / (double)frames) * 100 + "%");
             i++;
         }
-        a.ProduceImages();
     }
 }
