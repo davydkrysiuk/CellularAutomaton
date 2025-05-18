@@ -2,7 +2,7 @@
 
 class BriansBrain : CellularAutomaton
 {
-    public BriansBrain(int height, int width) : base(height, width)
+    public BriansBrain(int height, int width, int scale = 1, State[,] input = null, Boolean hasInput = false) : base(height, width, scale, input, hasInput)
     {
         AddCondition(-1, State.On, State.Dying, State.On);
         AddCondition(2, State.Off, State.On, State.On);

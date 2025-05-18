@@ -2,7 +2,7 @@
 
 class GameOfLife : CellularAutomaton
 {
-    public GameOfLife(int height, int width) : base(height, width)
+    public GameOfLife(int height, int width, int scale = 1, State[,] input = null, Boolean hasInput = false) : base(height, width, scale, input, hasInput)
     {
         AddCondition(0, State.On, State.Off, State.On);
         AddCondition(1, State.On, State.Off, State.On);
