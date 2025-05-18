@@ -32,7 +32,7 @@ class Program
     {
         CellularAutomaton a = new DayAndNight(1080 , 1920);
         a.Randomize();
-        int frames = 18000;
+        int frames = 500;
         int i = 0;
         while (i < frames)
         {
