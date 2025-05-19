@@ -7,7 +7,9 @@ public enum State
 {
     Off,
     On,
-    Dying
+    Dying,
+    Colour,
+    Uncolour
 }
 
 public abstract class CellularAutomaton
@@ -16,16 +18,38 @@ public abstract class CellularAutomaton
     private int Height { get; init; }
     State[,] _grid;
     private readonly List<Tuple<int, State, State, State>> _conditions = new List<Tuple<int, State, State, State>>();
-    private int _updateCount = 0;
-    private int _scale = 0;
-    protected CellularAutomaton(int height, int width, int scale = 1, State[,] input = null, Boolean hasInput = false)
+    private int _updateCount;
+    private readonly int _scale;
+    protected CellularAutomaton(int height, int width, int scale = 1)
     {
         Width = width / scale;
         Height = height / scale;
         _scale = scale;
-        _grid = hasInput ? input : new State[Height, Width];
+        _grid = new State[Height, Width];
     }
     
+    private int Moore(State[,] grid, State counted, int x, int y)
+    {
+        int gridSizeX = grid.GetLength(0);
+        int gridSizeY = grid.GetLength(1);
+        int amount = 0;
+        
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0) continue;
+                int newX = (x + i + gridSizeX) % gridSizeX;
+                int newY = (y + j + gridSizeY) % gridSizeY;
+
+                if (newX >= 0 && newX < gridSizeX && newY >= 0 && newY < gridSizeY)
+                {
+                    if (grid[newX, newY] == counted) amount++;
+                }
+            }
+        }
+        return amount;
+    }
     protected void AddCondition(int neededAmount, State fromState, State toState, State toCount)
     {
         Tuple<int, State, State, State> tuple = new(neededAmount, fromState, toState, toCount);
@@ -56,14 +80,13 @@ public abstract class CellularAutomaton
                     State toState = condition.Item3;
                     State stateToCount = condition.Item4;
 
-                    Neighborhood neighborhood = new Neighborhood();
                     if (currentState == fromState)
                     {
                         if (toCount == -1)
                         {
                             gridUpdate[i, j] = toState;
                         }
-                        else if (neighborhood.Moore(_grid, stateToCount, i, j) == toCount)
+                        else if (Moore(_grid, stateToCount, i, j) == toCount)
                         {
                             gridUpdate[i, j] = toState;
                         }
@@ -71,7 +94,7 @@ public abstract class CellularAutomaton
                 }
             });
         });
-        ProduceImage(gridUpdate, _updateCount + "");
+        ProduceImage(gridUpdate, _updateCount + 1 + "");
         _updateCount++;
         _grid = gridUpdate;
         return _grid;
@@ -130,37 +153,5 @@ public abstract class CellularAutomaton
 
         string filePath = "./images/" + filename + ".jpeg";
         image.Save(filePath);
-    }
-    
-    public virtual void Display()
-    {
-        for (int i = 0; i < Height; i++)
-        {
-            for (int j = 0; j < Width; j++)
-            {
-                switch (_grid[i, j])
-                {
-                    case State.On:
-                    {
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write(' ');
-                        break;
-                    }
-                    case State.Off:
-                    {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.Write(' ');
-                        break;
-                    }
-                    case State.Dying:
-                    {
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.Write(' ');
-                        break;
-                    }
-                }
-            }
-            Console.WriteLine();
-        }
     }
 }

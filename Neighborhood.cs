@@ -24,23 +24,4 @@ public class Neighborhood
         }
         return amount;
     }
-
-    public int Linear(State[,] grid, State counted, int x, int y, int radius)
-    {
-        int gridSizeX = grid.GetLength(0);
-        int amount = 0;
-
-        for (int i = -radius; i <= radius; i++)
-        {
-            if (i == x) continue;
-            int newX = (x + i + gridSizeX) % gridSizeX;
-
-            if (newX >= 0 && newX < gridSizeX)
-            {
-                if (grid[y, i] == counted) amount++;
-            }
-        }
-
-        return amount;
-    }
 }

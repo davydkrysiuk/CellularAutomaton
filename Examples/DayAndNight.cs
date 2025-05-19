@@ -2,7 +2,7 @@
 
 class DayAndNight : CellularAutomaton
 {
-    public DayAndNight(int height, int width, int scale = 1, State[,] input = null, Boolean hasInput = false) : base(height, width, scale, input, hasInput)
+    public DayAndNight(int height, int width, int scale = 1) : base(height, width, scale)
     {
         AddCondition(3, State.Off, State.On, State.On);
         AddCondition(6, State.Off, State.On, State.On);
