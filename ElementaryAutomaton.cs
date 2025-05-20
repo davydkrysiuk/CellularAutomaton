@@ -8,6 +8,8 @@ public class ElementaryAutomaton
     private int Height { get; init; }
     State[,] _grid;
     private readonly List<Tuple<State, State, State, State>> _conditions = new List<Tuple<State, State, State, State>>();
+    private readonly List<Tuple<State, Rgba32>> _colors = new List<Tuple<State, Rgba32>>();
+    
     private int _updateCount;
     private int _currentLine = 1;
     private readonly int _scale;
@@ -35,7 +37,12 @@ public class ElementaryAutomaton
             }
         }
     }
-    
+
+    public void ColourPair(State state, Rgba32 colour)
+    {
+        Tuple<State, Rgba32> tuple = new(state, colour);
+        _colors.Add(tuple);
+    }
     protected void AddConditionString(State newState, string pattern)
     {
         if (pattern.Length != 3) return;
@@ -100,7 +107,7 @@ public class ElementaryAutomaton
             for (int k = 0; k < Height; k++)
             {
                 Rgba32 pixel = new Rgba32(0,0,0);
-                switch (grid[k, j])
+                /*switch (grid[k, j])
                 {
                     case State.Off:
                     {
@@ -116,6 +123,13 @@ public class ElementaryAutomaton
                     {
                         pixel = new Rgba32(240, 165, 0);
                         break;
+                    }
+                }*/
+                foreach (var colour in _colors)
+                {
+                    if (colour.Item1 == grid[k, j])
+                    {
+                        pixel = colour.Item2;
                     }
                 }
                 

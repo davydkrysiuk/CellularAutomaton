@@ -18,6 +18,8 @@ public abstract class CellularAutomaton
     private int Height { get; init; }
     State[,] _grid;
     private readonly List<Tuple<int, State, State, State>> _conditions = new List<Tuple<int, State, State, State>>();
+    private readonly List<Tuple<State, Rgba32>> _colors = new List<Tuple<State, Rgba32>>();
+
     private int _updateCount;
     private readonly int _scale;
     protected CellularAutomaton(int height, int width, int scale = 1)
@@ -56,6 +58,11 @@ public abstract class CellularAutomaton
         _conditions.Add(tuple);
     }
 
+    public void ColourPair(State state, Rgba32 colour)
+    {
+        Tuple<State, Rgba32> tuple = new(state, colour);
+        _colors.Add(tuple);
+    }
     protected void AddConditionRanged(int from, int to, State fromState, State toState, State toCount)
     {
         for (int i = from; i < to; i++)
@@ -122,22 +129,11 @@ public abstract class CellularAutomaton
             for (int k = 0; k < Height; k++)
             {
                 Rgba32 pixel = new Rgba32(0,0,0);
-                switch (grid[k, j])
+                foreach (var colour in _colors)
                 {
-                    case State.Off:
+                    if (colour.Item1 == grid[k, j])
                     {
-                        pixel =  new Rgba32(0, 0,0);
-                        break;
-                    }
-                    case State.Dying:
-                    {
-                        pixel = new Rgba32(0,0,0);
-                        break;
-                    }
-                    case State.On:
-                    {
-                        pixel = random.Next(0, 2) == 0 ? new Rgba32(204, 102, 255) : new Rgba32(204, 0, 255);
-                        break;
+                        pixel = colour.Item2;
                     }
                 }
                 
