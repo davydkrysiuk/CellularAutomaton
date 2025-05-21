@@ -1,17 +1,18 @@
 ﻿namespace CellularAutomaton.Examples;
 
-public class Rule184 : ElementaryAutomaton
+public class Rule241 : ElementaryAutomaton
 {
-    public Rule184(int width, int height, int scale) : base(width, height, scale)
+    public Rule241(int width, int height, int scale) : base(width, height, scale)
     {
         AddConditionString(State.On, "111");
-        AddConditionString(State.Off, "110");
+        AddConditionString(State.On, "110");
         AddConditionString(State.On, "101");
         AddConditionString(State.On, "100");
-        AddConditionString(State.On, "011");
+        AddConditionString(State.On, "000");
+        
+        AddConditionString(State.Off, "011");
         AddConditionString(State.Off, "010");
         AddConditionString(State.Off, "001");
-        AddConditionString(State.Off, "000");
     }
 
 }
