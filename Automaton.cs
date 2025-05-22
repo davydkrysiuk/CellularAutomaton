@@ -34,6 +34,21 @@ public abstract class Automaton(int width, int height, int scale = 1)
         }
     }
 
+    public void FillLine(int line, State state)
+    {
+        for (int i = 0; i < Width; i++)
+        {
+            Grid[line, i] = state;
+        }
+    }
+
+    public void FillAll(State state)
+    {
+        for (int i = 0; i < Height; i++)
+        {
+            FillLine(i, state);
+        }
+    }
     public void RandomizeAll()
     {
         for (int i = 0; i < Height; i++)
