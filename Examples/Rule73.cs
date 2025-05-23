@@ -4,14 +4,14 @@ public class Rule73 : ElementaryAutomaton
 {
     public Rule73(int width, int height, int scale) : base(width, height, scale)
     {
-        AddConditionString(State.Off, "111");
-        AddConditionString(State.On, "110");
-        AddConditionString(State.Off, "101");
-        AddConditionString(State.Off, "100");
-        AddConditionString(State.On, "011");
-        AddConditionString(State.On, "000");
-        AddConditionString(State.Off, "010");
-        AddConditionString(State.Off, "001");
+        AddConditionS(State.Off, "111");
+        AddConditionS(State.On, "110");
+        AddConditionS(State.Off, "101");
+        AddConditionS(State.Off, "100");
+        AddConditionS(State.On, "011");
+        AddConditionS(State.On, "000");
+        AddConditionS(State.Off, "010");
+        AddConditionS(State.Off, "001");
         
     }
 }

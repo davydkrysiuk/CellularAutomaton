@@ -15,7 +15,7 @@ public abstract class Automaton(int width, int height, int scale = 1)
     protected int Width { get; init; } = width; 
     protected int Height { get; init; } = height;
     protected State[,] Grid = new State[height, width];
-    private readonly List<Tuple<State, Rgba32>> _colors = new();
+    private readonly List<Tuple<State, Rgba32>> _colors = [];
     protected int UpdateCount = 0;
 
     public void ColourPair(State state, Rgba32 colour)
@@ -27,9 +27,9 @@ public abstract class Automaton(int width, int height, int scale = 1)
     public void RandomizeLine(int line)
     {
         Random random = new();
-        for (int i = 0; i < Width; i++)
+        for (var i = 0; i < Width; i++)
         {
-            int val = random.Next(0, 2);
+            var val = random.Next(0, 2);
             Grid[line, i] = (val == 0 ? State.On : State.Off);
         }
     }
@@ -44,7 +44,7 @@ public abstract class Automaton(int width, int height, int scale = 1)
 
     public void FillAll(State state)
     {
-        for (int i = 0; i < Height; i++)
+        for (var i = 0; i < Height; i++)
         {
             FillLine(i, state);
         }
@@ -64,7 +64,7 @@ public abstract class Automaton(int width, int height, int scale = 1)
         {
             for (int k = 0; k < Height; k++)
             {
-                Rgba32 pixel = new Rgba32(0,0,0);
+                var pixel = new Rgba32(0,0,0);
                 foreach (var colour in _colors)
                 {
                     if (colour.Item1 == grid[k, j])
@@ -73,16 +73,16 @@ public abstract class Automaton(int width, int height, int scale = 1)
                     }
                 }
                 
-                for (int x = 0; x < scale; x++)
+                for (var x = 0; x < scale; x++)
                 {
-                    for (int y = 0; y < scale; y++)
+                    for (var y = 0; y < scale; y++)
                     {
                         image[(j * scale) + x, (k * scale) + y] = pixel;
                     }
                 }
             }
         });
-        string filePath = "./images/" + filename + ".jpeg";
+        var filePath = "./images/" + filename + ".jpeg";
         image.Save(filePath);
         
     }

@@ -4,16 +4,13 @@ namespace CellularAutomaton;
 
 public class ElementaryAutomaton : Automaton
 {
-    private readonly List<Tuple<State, State, State, State>> _conditions = new List<Tuple<State, State, State, State>>();
-    private readonly List<Tuple<State, Rgba32>> _colors = new List<Tuple<State, Rgba32>>();
-    public Boolean StopWhenDone { get; set; } = true;
+    private readonly List<Tuple<State, State, State, State>> _conditions = [];
+    public bool StopWhenDone { get; set; } = true;
     private int _currentLine = 1;
-    private readonly int _scale;
     protected ElementaryAutomaton(int height, int width, int scale) : base(height, width, scale)
     {
         Width = width / scale;
         Height = height / scale;
-        _scale = scale;
         Grid = new State[Height, Width];
     }
     
@@ -23,7 +20,7 @@ public class ElementaryAutomaton : Automaton
         _conditions.Add(tuple);
     }
     
-    protected void AddConditionString(State newState, string pattern)
+    protected void AddConditionS(State newState, string pattern)
     {
         if (pattern.Length != 3) return;
         var numbers = pattern.ToCharArray();
@@ -31,9 +28,9 @@ public class ElementaryAutomaton : Automaton
         AddCondition(newState, (State)(numbers[0] - '0'), (State)(numbers[1] - '0'), (State)(numbers[2] - '0'));
     }
     
-    public override void Update(Boolean produceImage = false)
+    public override void Update(bool produceImage = false)
     {
-        State[,] gridUpdate = Grid;
+        var gridUpdate = Grid;
 
         if (StopWhenDone && _currentLine + 1> Height)
         {
