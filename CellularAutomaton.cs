@@ -65,7 +65,7 @@ public abstract class CellularAutomaton : Automaton
                 }
             });
         });
-        ProduceImage(gridUpdate, UpdateCount + 1 + "");
+        if (produceImage) ProduceImage(gridUpdate, UpdateCount + 1 + "");
         UpdateCount++;
         Grid = gridUpdate;
     }

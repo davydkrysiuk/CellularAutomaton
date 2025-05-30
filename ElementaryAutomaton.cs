@@ -55,7 +55,7 @@ public class ElementaryAutomaton : Automaton
         }
 
         _currentLine++;
-        ProduceImage(gridUpdate, UpdateCount + 1 + "");
+        if (produceImage) ProduceImage(gridUpdate, UpdateCount + 1 + "");
         UpdateCount++;
         Grid = gridUpdate;
     }

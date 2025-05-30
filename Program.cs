@@ -7,19 +7,17 @@ internal static class Program
 {
     private static void Main()
     {
-        ElementaryAutomaton a = new Thingy(1080  , 1920 , 1);
-        a.RandomizeLine(0);
-        a.ColourPair(State.On, new Rgba32(0, 0, 255));
-        a.ColourPair(State.Off, new Rgba32(255, 255, 0));
-        a.ColourPair(State.Dying, new Rgba32(250, 246, 233));
-        a.StopWhenDone = true;
-        const int frames = 1920;
+        Automaton a = new Rule73(1080  , 1920 , 10);
+        a.ColourPair(State.Off, new Rgba32(0, 0, 0));
+        a.ColourPair(State.On, new Rgba32(100,200,100));
+        a.RandomizeAll();
+        const int frames = 600;
         var i = 0;
         while (i < frames)
         {
             try
             {
-                a.Update(true);
+                a.Update(i == frames - 1);
                 Console.Write("" + (i + 1) + "/" + frames + "\n");
                 i++;
             }

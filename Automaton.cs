@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace CellularAutomaton; 
 
@@ -82,6 +83,10 @@ public abstract class Automaton(int width, int height, int scale = 1)
                 }
             }
         });
+        
+        var bloomImage = image.Clone((ctx => ctx.GaussianBlur(5)));
+        image.Mutate((ctx => ctx.DrawImage(bloomImage, PixelColorBlendingMode.Screen, 1f)));
+
         var filePath = "./images/" + filename + ".jpeg";
         image.Save(filePath);
         
